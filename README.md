@@ -44,15 +44,15 @@ El Mysql sobre el que se desarrolo, al correr sobre windows ignora las mayuscula
 ##### Estructura del proyecto
 
 - delegates
-> > abstract
-> > impl
+    > abstract
+    > impl
 - libs
-> > mercadopago
-> > qr
+    > mercadopago
+    > qr
 - sql
-> > procedures
-> > schema
-> > tables
+    > procedures
+    > schema
+    > tables
 - utils
 
 Como funciona el WebService:
