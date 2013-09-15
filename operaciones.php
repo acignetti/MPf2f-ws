@@ -16,7 +16,7 @@ $operacion = get_url_var('operacion', '');
 $response = new stdClass();
 $delegate = null;
 switch ($operacion) {
-    case "login":
+    case OPERATION_USER_LOGIN:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
             $username = get_url_var('username', '');
@@ -25,7 +25,7 @@ switch ($operacion) {
         }
         break;
 
-    case "logout":
+    case OPERATION_USER_LOGOUT:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
             $token = get_url_var('token', '');
@@ -33,11 +33,19 @@ switch ($operacion) {
         }
         break;
 
-    case "mpcheckout":
+    case OPERATION_MP_CHECKOUT:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
             $id = get_url_var('id', -1);
             $response = $delegate->checkout($id);
+        }
+        break;
+
+        case OPERATION_MP_IPN:
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
+        if ($delegate) {
+            $id = get_url_var('id', -1);
+            $response = $delegate->ipn($id);
         }
         break;
 

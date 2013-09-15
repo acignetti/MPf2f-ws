@@ -5,7 +5,7 @@
  *
  * @author Axel
  */
-class UsuarioDelegate extends AbstractDelegate {
+class UserDelegate extends AbstractDelegate {
 
     protected function __construct() {
         parent::__construct();
@@ -13,7 +13,7 @@ class UsuarioDelegate extends AbstractDelegate {
 
     public static function getInstance() {
         if (is_null(parent::$instance)) {
-            parent::$instance = new UsuarioDelegate();
+            parent::$instance = new UserDelegate();
         }
         return parent::$instance;
     }
