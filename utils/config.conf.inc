@@ -19,10 +19,12 @@ define('CLIENT_SECRET', 'gqsFGRTuDJ3o3hjacIac7sXTMMTvOS2x');
 define('DELEGATE_USER', 'UserDelegate');
 define('DELEGATE_MP', 'MercadoPagoDelegate');
 define('DELEGATE_MYSQL', 'MySQLDelegate');
+define('DELEGATE_SALES', 'SalesDelegate');
 
 //definicion de operaciones
 define('OPERATION_USER', 'user_');
 define('OPERATION_MP', 'mp_');
+define('OPERATION_SALES', 'sales_');
 
 // operaciones relacionadas al usuario
 define('OPERATION_USER_LOGIN', OPERATION_USER . 'login');
@@ -32,4 +34,9 @@ define('OPERATION_USER_SESION_CHECK', OPERATION_USER. 'session_check');
 // operaciones relacionadas a mp
 define('OPERATION_MP_CHECKOUT', OPERATION_MP . 'checkout');
 define('OPERATION_MP_IPN', OPERATION_MP . 'ipn');
+
+// operaciones relacionadas a las ventas
+define('OPERATION_SALES_QR', OPERATION_SALES . 'qr');
+define('OPERATION_SALES_NFC', OPERATION_SALES . 'nfc');
+define('OPERATION_SALES_CODE', OPERATION_SALES . 'code');
 ?>
