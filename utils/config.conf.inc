@@ -11,6 +11,7 @@ define('CLIENT_SECRET', 'gqsFGRTuDJ3o3hjacIac7sXTMMTvOS2x');
 // definicion de delegates
 define('DELEGATE_USER', 'UserDelegate');
 define('DELEGATE_MP', 'MercadoPagoDelegate');
+define('DELEGATE_MYSQL', 'MySQLDelegate');
 
 //definicion de operaciones
 define('OPERATION_USER', 'user_');

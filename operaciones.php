@@ -14,13 +14,13 @@ $operacion = get_url_var('operacion', '');
 
 // respuesta por defecto
 $response = new stdClass();
-$delegate = null;
 switch ($operacion) {
+    // operaciones de usuario
     case OPERATION_USER_LOGIN:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
             $username = get_url_var('username', '');
-            $psw = get_url_var('passwrod', '');
+            $psw = get_url_var('password', '');
             $response = $delegate->login($username, $psw);
         }
         break;
@@ -33,6 +33,7 @@ switch ($operacion) {
         }
         break;
 
+    // operaciones de mp
     case OPERATION_MP_CHECKOUT:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
@@ -41,7 +42,7 @@ switch ($operacion) {
         }
         break;
 
-        case OPERATION_MP_IPN:
+    case OPERATION_MP_IPN:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
             $id = get_url_var('id', -1);
@@ -49,8 +50,8 @@ switch ($operacion) {
         }
         break;
 
-    default: // respuesta por defecto
-        $response = new stdClass();
+    // respuesta por defecto
+    default:
         $response->response = "Operacion $operacion no definida..";
         break;
 }

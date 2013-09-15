@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Devuelve un parametro
  * @param String $param nombre del parametro a obtener
@@ -17,6 +16,7 @@ function get_url_var($param, $default = null) {
 
     return $val;
 }
+
 /**
  * defino http_response_code para versiones viejas de php
  */
