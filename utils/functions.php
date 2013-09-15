@@ -1,7 +1,5 @@
 <?php
 
-include_once './config.conf.inc';
-
 /**
  * Devuelve un parametro
  * @param String $param nombre del parametro a obtener
