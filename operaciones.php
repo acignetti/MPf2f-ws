@@ -26,7 +26,7 @@ switch ($operacion) {
             $psw = get_url_var('password', '');
             $client_id = get_url_var('client_id', '');
             $client_secret = get_url_var('client_secret', '');
-            
+
             $response = $delegate->signup($username, $psw, $fullname, $client_id, $client_secret);
         }
         break;
@@ -195,12 +195,73 @@ switch ($operacion) {
         }
         break;
 
-    case OPERATION_MP_AUTH: // 
+    case OPERATION_MP_AUTH: // obtiene las credenciales del usuario
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
             $client_id = get_url_var('client_id', -1);
             $client_secret = get_url_var('client_secret', -1);
             $response = $delegate->auth($client_id, $client_secret);
+        }
+        break;
+
+    case OPERATION_MP_SEARCH: // buscar pagos en la cuenta de MP
+        $access = validate_sesion();
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
+            if ($delegate) {
+                $user_id = $access->session->user_id;
+
+                // obengo (intento) todos los parametros
+                $range = get_url_var('range');
+                $installments = get_url_var('installments');
+                $reason = get_url_var('reason');
+                $begin_date = get_url_var('begin_date');
+                $end_date = get_url_var('end_date');
+                $status = get_url_var('status');
+                $operation_type = get_url_var('operation_type');
+                $payer_email = get_url_var('payer_email');
+                $site_id = get_url_var('site_id');
+                $external_reference = get_url_var('external_reference');
+
+                $search_params = array();
+
+                // si estan, los agrego a los parametros de busqueda
+                if ($range)
+                    $search_params[] = $range;
+
+                if ($installments)
+                    $search_params[] = $installments;
+
+                if ($reason)
+                    $search_params[] = $reason;
+
+                if ($begin_date)
+                    $search_params[] = $begin_date;
+
+                if ($end_date)
+                    $search_params[] = $end_date;
+
+                if ($status)
+                    $search_params[] = $status;
+
+                if ($operation_type)
+                    $search_params[] = $operation_type;
+
+                if ($payer_email)
+                    $search_params[] = $payer_email;
+
+                if ($site_id)
+                    $search_params[] = $site_id;
+
+                if ($external_reference)
+                    $search_params[] = $external_reference;
+
+                // busco por lo que haya
+                $response = $delegate->search($user_id, $search_params);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
         }
         break;
 

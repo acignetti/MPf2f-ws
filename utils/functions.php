@@ -6,7 +6,7 @@
  * @param mixed $default valor por defecto en caso de no estar definido el parametro
  * @return mixed devuelve el parametro o el valor por defecto
  */
-function get_url_var($param, $default = null) {
+function get_url_var($param, $default = FALSE) {
     $val = $default;
 
     if (DEBUG && isset($_GET[$param]))

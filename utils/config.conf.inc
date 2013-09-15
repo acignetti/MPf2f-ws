@@ -42,6 +42,7 @@ define('OPERATION_USER_SESION_CHECK', OPERATION_USER . 'session_check');
 define('OPERATION_MP_CHECKOUT', OPERATION_MP . 'checkout');
 define('OPERATION_MP_CHECKOUT_DEAL', OPERATION_MP . 'checkout_deal');
 define('OPERATION_MP_AUTH', OPERATION_MP . 'auth');
+define('OPERATION_MP_SEARCH', OPERATION_MP . 'search');
 define('OPERATION_MP_IPN', OPERATION_MP . 'ipn');
 
 // operaciones relacionadas a las ventas

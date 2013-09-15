@@ -8,7 +8,7 @@ CREATE PROCEDURE `MPF2F_UserSignUp`(
  Descripción: 
  Comentarios:
  Autores: Cavecedo, Gabriel A.
- Audit Trail:
+ Audit Trail: Coronel, Axel: Agregado SELECT @@IDENTITY;
 ===================================================
 */
 _user varchar(100) ,
@@ -23,6 +23,7 @@ BEGIN
 	INSERT INTO MPF2F_user(user, pass, name, client_id, client_secret, token)
 	   VALUES(_user, _pass, _name, _client_id, _client_secret, _token);
 
+SELECT @@IDENTITY as user_id;
 
 END$$
 DELIMITER ;

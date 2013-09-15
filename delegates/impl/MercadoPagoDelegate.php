@@ -92,7 +92,7 @@ class MercadoPagoDelegate extends AbstractDelegate {
         $response = new stdClass();
         $response->status = false;
         try {
-            $payment_info_json = json_encode($payment_info);
+            $payment_info_json = json_decode($payment_info);
             $external_reference = $payment_info_json->response->collection->external_reference;
             $status = $payment_info_json->response->collection->status;
 
@@ -134,9 +134,15 @@ class MercadoPagoDelegate extends AbstractDelegate {
             $user_data = $this->get_user_mp_credentials($user_id);
             if ($user_data->status) { // se pudo obtener las credenciales?
                 $this->init_mp($user_data->credentials->client_id, $user_data->credentials->client_secret);
-                $payment_info = $this->mp->get_payment_info($id);
-                $response->ipn = $this->process_ipn($payment_info);
-                $response->status = true;
+                if ($this->mp) {
+                    try {
+                        $payment_info = $this->mp->get_payment_info($id);
+                        $response->ipn = $this->process_ipn($payment_info);
+                        $response->status = true;
+                    } catch (Exception $exc) {
+                        $response->error = $exc->getTraceAsString();
+                    }
+                }
             }
         } catch (Exception $exc) {
             // en caso de error, se devuelve 500 para que MP lo tome como error y reintente los IPN
@@ -229,5 +235,31 @@ class MercadoPagoDelegate extends AbstractDelegate {
         return $response;
     }
 
+    /**
+     * Permite realizar busquedas en la cuenta de MP del usuario
+     * @param type $user_id el id del usuario sobre el que se realiza la busqueda
+     * @param type $search_params parametros de busqueda (https://github.com/mercadopago/sdk-php/tree/master/examples/payment-search)
+     * @return \stdClass retorna una coleccion de paymentss
+     */
+    public function search($user_id, $search_params) {
+        $response = new stdClass();
+        $response->status = false;
+        $user_data = $this->get_user_mp_credentials($user_id);
+        if ($user_data->status) {
+            $this->init_mp($user_data->credentials->client_id, $user_data->credentials->client_secret);
+            try {
+                if ($this->mp) {
+                    $response->search = $this->mp->search_payment($search_params);
+                    $response->status = true;
+                }
+            } catch (Exception $exc) {
+                $response->error = $exc->getTraceAsString();
+            }
+        }
+
+        return $response;
+    }
+
 }
+
 ?>
