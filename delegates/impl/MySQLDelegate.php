@@ -73,8 +73,12 @@ class MySQLDelegate extends AbstractDatabaseDelegate {
     }
 
     /**
-     * Invoca una procedure con los parametros suministrados
-     * @throws Exception 
+     * Captura la llamada a un metodo sin definir y lo transforma en una invocacion a una stored procedure.
+     * 
+     * @param type $procedure Nombre de la procedure a ejecutar, se le agrega el prefijo configurado $this->prfix
+     * @param type $arguments contine todos los argumentos a pasarle a la sp
+     * @return type
+     * @throws Exception
      */
     public function __call($procedure, $arguments) {
         if (!($this->conn instanceof mysqli)) {
