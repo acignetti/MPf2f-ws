@@ -77,7 +77,7 @@ class SalesDelegate extends AbstractDelegate {
     }
 
     /**
-     * Generar un qr a partir del id de una venta con la url del init_point de mp
+     * Genera un qr a partir del id de una venta con la url del init_point de mp
      * @param int $id id de la venta
      * @return String (Base64) String Base64 con la img del codigo qr
      */
@@ -102,6 +102,11 @@ class SalesDelegate extends AbstractDelegate {
         return $response;
     }
 
+    /**
+     * Devuelve la url del init_point de mp
+     * @param int $id id de la venta
+     * @return String url para hacer checkout
+     */
     public function nfc($id) {
         $response = new stdClass();
         $response->status = true;
@@ -109,12 +114,45 @@ class SalesDelegate extends AbstractDelegate {
         return $response;
     }
 
+        /**
+     * Devuelve la url del init_point de mp
+     * @param int $code codigo de la venta
+     * @return String url para hacer checkout
+     */
     public function code($code) {
         $response = new stdClass();
         $response->status = true;
         // despues se ve si el codigo va a tener otro dominio distinto
         $response->url = $this->build_url_checkout($code);
         return $response;
+    }
+
+    /**
+     * Obtiene las ofertas cercanas a la posicion
+     * @param type $lat latitud
+     * @param type $lon longitud
+     * @param type $range distancia dentro de la cual buscar
+     * @return \stdClass array con las ofertas cercanas
+     */
+    public function near_deals($lat, $lon, $range) {
+        $deals = new stdClass();
+        $deals->status = false;
+        $deals->deals = array();
+
+        $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
+
+        if ($db) {
+            try {
+                $result = $db->DealsNearBy($lat, $lon, $range);
+                while ($result && $r = $result->fetch_object()) {
+                    $deals->deals[] = $r;
+                }
+                $deals->status = true;
+            } catch (Exception $exc) {
+                $deals->error = $exc->getMessage();
+            }
+        }
+        return $deals;
     }
 
 }

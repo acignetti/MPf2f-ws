@@ -2,9 +2,8 @@
 
 define('DEBUG', TRUE); // si esta activado se devuelven los errores en los json
 define('SANDBOX', TRUE); // activar el sandbox de MP?
-
 // datos de conexion a la db
-define("MYSQL_HOST", 'localhost'); 
+define("MYSQL_HOST", 'localhost');
 define("MYSQL_DB", 'MPF2F');
 define("MYSQL_USER", 'root');
 define("MYSQL_PWD", '');
@@ -46,4 +45,5 @@ define('OPERATION_SALES_GET', OPERATION_SALES . 'get');
 define('OPERATION_SALES_QR', OPERATION_SALES . 'qr');
 define('OPERATION_SALES_NFC', OPERATION_SALES . 'nfc');
 define('OPERATION_SALES_CODE', OPERATION_SALES . 'code');
+define('OPERATION_SALES_DEALS', OPERATION_SALES . 'deals');
 ?>
