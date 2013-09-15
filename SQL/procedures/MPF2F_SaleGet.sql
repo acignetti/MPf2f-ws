@@ -12,12 +12,12 @@
 	===================================================
 	*/
 
-	  _sale_id int
-	  
+	  _sale_id int,
+	 _user_id int
 	)
 	BEGIN
 		
-		SELECT * FROM MPF2F_sale WHERE sale_id = _sale_id;
+		SELECT * FROM MPF2F_sale WHERE sale_id = _sale_id and userid = _user_id;
 		
 
 

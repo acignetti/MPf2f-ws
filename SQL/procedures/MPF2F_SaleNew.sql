@@ -11,7 +11,7 @@
 	 Audit Trail:
 	===================================================
 	*/
-
+	  _user_id int,
 	  _name varchar(500),
 	  _ammount double
 
@@ -20,7 +20,7 @@
 	BEGIN
 		
 		
-		INSERT INTO MPF2F_sale( name, ammount, date) VALUES(_name, _ammount, now());
+		INSERT INTO MPF2F_sale(user_id, name, ammount, date) VALUES(_user_id, _name, _ammount, now());
 
 		SELECT @@identity as sale_id;
 
