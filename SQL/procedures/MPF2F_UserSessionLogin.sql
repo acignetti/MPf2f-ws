@@ -42,7 +42,7 @@ BEGIN
 
 	END IF;
 
-	SELECT uid,uname, us.* FROM MPF2F_user_session us WHERE user = _user AND session_key = @secret;
+	SELECT uid,uname as name, us.* FROM MPF2F_user_session us WHERE user = _user AND session_key = @secret;
 	
 
 END//
