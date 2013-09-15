@@ -22,11 +22,12 @@ switch ($operacion) {
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
             $username = get_url_var('username', '');
+            $fullname = get_url_var('fullname', '');
             $psw = get_url_var('password', '');
             $client_id = get_url_var('client_id', '');
             $client_secret = get_url_var('client_secret', '');
             
-            $response = $delegate->signup($username, $psw, $client_id, $client_secret);
+            $response = $delegate->signup($username, $psw, $fullname, $client_id, $client_secret);
         }
         break;
 
@@ -207,7 +208,8 @@ switch ($operacion) {
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
             $id = get_url_var('id', -1);
-            $response = $delegate->ipn($id);
+            $user_id = get_url_var('user_id', -1);
+            $response = $delegate->ipn($id, $user_id);
         }
         break;
 
@@ -216,7 +218,7 @@ switch ($operacion) {
         $response->response = "Operacion $operacion no definida..";
         break;
 }
-if ($callback) { // jsonp
+if ($callback) { // jsonp para los pibes
     header('Content-type: application/javascript');
     echo "$callback('" . json_encode($response) . "');";
 } else { // json

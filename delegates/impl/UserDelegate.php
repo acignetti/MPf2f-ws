@@ -10,7 +10,7 @@ class UserDelegate extends AbstractDelegate {
         parent::__construct();
     }
 
-    public function signup($username, $psw, $client_id, $client_secret) {
+    public function signup($username, $psw, $fullname, $client_id, $client_secret) {
         $response = new stdClass();
         $response->status = false;
 
@@ -21,7 +21,7 @@ class UserDelegate extends AbstractDelegate {
 
         if ($db) {
             try {
-                $result = $db->UserSignUp($username, $psw, $client_id, $client_secret, $token);
+                $result = $db->UserSignUp($username, $psw, $fullname, $client_id, $client_secret, $token);
                 if ($result && $result->num_rows > 0) {
                     $response->user = $result->fetch_object();
                     $response->status = true;

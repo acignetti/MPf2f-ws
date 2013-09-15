@@ -12,21 +12,75 @@ class MercadoPagoDelegate extends AbstractDelegate {
     public function __construct() {
         parent::__construct();
         include_once __DIR__ . '/../../libs/mercadopago/mercadopago.php';
-        try {
-//            $this->init_mp(CLIENT_ID, CLIENT_SECRET);
-        } catch (Exception $exc) {
-            do_log($exc->getTraceAsString());
-        }
     }
 
+    /**
+     * inicializa MP
+     * @param type $client_id
+     * @param type $client_secret
+     */
     private function init_mp($client_id, $client_secret) {
-        $this->mp = new MP($client_id, $client_secret);
-        if (SANDBOX)
-            $this->mp->sandbox_mode(SANDBOX);
+        try {
+            $this->mp = new MP($client_id, $client_secret);
+            if (SANDBOX)
+                $this->mp->sandbox_mode(SANDBOX);
+        } catch (Exception $e) {
+            $this->mp = FALSE;
+        }
+        return $this->mp;
     }
 
+    /**
+     * Obtiene las credenciales de MP asociadas al usuario
+     * @param type $user_id id del usuario
+     * @return \stdClass un objeto con el client_id, client_secret y el token 
+     */
     private function get_user_mp_credentials($user_id) {
- 
+        $data = new stdClass();
+        $data->status = false;
+
+        $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
+
+        if ($db) {
+            try {
+                $result = $db->GetUserCredentials($user_id);
+                if ($result && $result->num_rows > 0) {
+                    $data->credentials = $result->fetch_object();
+                    $data->status = true;
+                } else {
+                    if (DEBUG)
+                        $data->error = $result;
+                }
+            } catch (Exception $exc) {
+                $data->error = $exc->getMessage();
+            }
+        }
+
+        return $data;
+    }
+
+    private function get_user_data_from_sale($sale_id) {
+        $data = new stdClass();
+        $data->status = false;
+
+        $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
+
+        if ($db) {
+            try {
+                $result = $db->GetSaleUser($sale_id);
+                if ($result && $result->num_rows > 0) {
+                    $data->credentials = $result->fetch_object();
+                    $data->status = true;
+                } else {
+                    if (DEBUG)
+                        $data->error = $result;
+                }
+            } catch (Exception $exc) {
+                $data->error = $exc->getMessage();
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -57,14 +111,14 @@ class MercadoPagoDelegate extends AbstractDelegate {
                     $response->error = $exc->getMessage();
                 }
             }
-            $response->status = true;
         } catch (Exception $exc) {
             $response->error = $exc->getTraceAsString();
         }
+
         if ($response->status)
             http_response_code(200); // http_response_code(201); si se creara algo..
         else
-            http_response_code(500);
+            http_response_code(500); // :(
         return $response;
     }
 
@@ -72,14 +126,18 @@ class MercadoPagoDelegate extends AbstractDelegate {
      * procesa un IPN
      * @param type $id
      */
-    public function ipn($id) {
+    public function ipn($id, $user_id) {
         $response = new stdClass();
+        $response->status = false;
         try {
-            //obtener el id del usuario al que pertenece la venta
-            //instanciar MP para ese usuario
-
-            $payment_info = $this->mp->get_payment_info($id);
-            $response->ipn = $this->process_ipn($payment_info);
+            // obtener las credenciales del usuario
+            $user_data = $this->get_user_mp_credentials($user_id);
+            if ($user_data->status) { // se pudo obtener las credenciales?
+                $this->init_mp($user_data->credentials->client_id, $user_data->credentials->client_secret);
+                $payment_info = $this->mp->get_payment_info($id);
+                $response->ipn = $this->process_ipn($payment_info);
+                $response->status = true;
+            }
         } catch (Exception $exc) {
             // en caso de error, se devuelve 500 para que MP lo tome como error y reintente los IPN
             http_response_code(500);
@@ -110,33 +168,39 @@ class MercadoPagoDelegate extends AbstractDelegate {
             }
         }
         if ($item) {
-            $preference_data = array(
-                "external_reference" => "$id",
-                "items" => array(
-                    array(
-                        "title" => $item->name,
-                        "quantity" => 1,
-                        "currency_id" => "ARS",
-                        "unit_price" => (int) $item->ammount
-                    )
-                )
-            );
-            try {
-                if ($this->mp) { // se pudo inicializar MP?
-                    // crear el preference de la venta
-                    $preference = $this->mp->create_preference($preference_data);
-                    if ($this->mp->sandbox_mode()) // sanbox?
-                        $response->init_point = $preference['response']['sandbox_init_point'];
-                    else
-                        $response->init_point = $preference['response']['init_point'];
 
-                    $response->status = true;
+            $user_data = $this->get_user_mp_credentials($user_id);
+            if ($user_data->status) {
+                $this->init_mp($user_data->credentials->client_id, $user_data->credentials->client_secret);
+
+                $preference_data = array(
+                    "external_reference" => "$id",
+                    "items" => array(
+                        array(
+                            "title" => $item->name,
+                            "quantity" => 1,
+                            "currency_id" => "ARS",
+                            "unit_price" => (int) $item->ammount
+                        )
+                    )
+                );
+                try {
+                    if ($this->mp) { // se pudo inicializar MP?
+                        // crear el preference de la venta
+                        $preference = $this->mp->create_preference($preference_data);
+                        if ($this->mp->sandbox_mode()) // sanbox?
+                            $response->init_point = $preference['response']['sandbox_init_point'];
+                        else
+                            $response->init_point = $preference['response']['init_point'];
+
+                        $response->status = true;
+                    }
+                    else {
+                        $response->error = "Ocurrio un error al procesar el checkout";
+                    }
+                } catch (Exception $exc) {
+                    $response->error = $exc->getTraceAsString();
                 }
-                else {
-                    $response->error = "Ocurrio un error al procesar el checkout";
-                }
-            } catch (Exception $exc) {
-                $response->error = $exc->getTraceAsString();
             }
         }
         return $response;
