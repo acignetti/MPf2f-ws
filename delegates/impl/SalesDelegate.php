@@ -155,6 +155,7 @@ class SalesDelegate extends AbstractDelegate {
         return $deals;
     }
 
+    //
     public function buy_deal($id) {
         $response = new stdClass();
         $response->status = true;
