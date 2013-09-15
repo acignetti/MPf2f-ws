@@ -44,15 +44,15 @@ El Mysql sobre el que se desarrolo, al correr sobre windows ignora las mayuscula
 ##### Estructura del proyecto
 
 - delegates
-- abstract
-    impl
+>> abstract
+>> impl
 - libs
-    mercadopago
-    qr
+>> mercadopago
+>> qr
 - sql
-    procedures
-    schema
-    tables
+>> procedures
+>> schema
+>> tables
 - utils
 
 Como funciona el WebService:
@@ -62,7 +62,7 @@ El punto de entrada es **operaciones.php**
 
 - Ejemplo de pegada:
 
-http://localhost/mp-ws/operaciones.php?operacion=user_login&username=user&password=123
+*http://localhost/mp-ws/operaciones.php?operacion=user_login&username=user&password=123*
 
 Donde:
 - La *operacion* a ejecutar es **user_login**
