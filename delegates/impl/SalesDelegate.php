@@ -44,6 +44,9 @@ class SalesDelegate extends AbstractDelegate {
             }
         }
 
+        if ($sales->status) // se creo una entrada en la db
+            http_response_code(201);
+
         return $sales;
     }
 
@@ -89,13 +92,13 @@ class SalesDelegate extends AbstractDelegate {
         try {
             include __DIR__ . '/../../libs/qr/qrlib.php';
             $url = $this->build_url_checkout($id);
-            
+
             // generar codigo qr con la url con el init_point
             ob_start();
             QRCode::png($url, false, QR_ECLEVEL_H);
             $response->qr = $image_string = base64_encode(ob_get_contents());
             ob_end_clean();
-            
+
             $response->status = true;
         } catch (Exception $exc) {
             $response->error = $exc->getTraceAsString();
