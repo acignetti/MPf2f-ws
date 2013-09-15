@@ -45,14 +45,14 @@ El Mysql sobre el que se desarrolo, al correr sobre windows ignora las mayuscula
 
 - delegates
 - abstract
-⋅⋅* impl
+..* impl
 - libs
-⋅⋅* mercadopago
-⋅⋅* qr
+..* mercadopago
+..* qr
 - sql
-⋅⋅* procedures
-⋅⋅* schema
-⋅⋅* tables
+..* procedures
+..* schema
+..* tables
 - utils
 
 Como funciona el WebService:
@@ -61,6 +61,7 @@ El punto de entrada es **operaciones.php**
 - Lo minimo que se espera es un parametro **operaciones**, se utiliza en un switch para identificar la *operacion*, los *parametros* asociados a la operacion y luego delegar la logica en a *delegate*.
 
 - Ejemplo de pegada:
+
 http://localhost/mp-ws/operaciones.php?operacion=user_login&username=user&password=123
 
 Donde:
