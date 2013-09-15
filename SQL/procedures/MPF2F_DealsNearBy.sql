@@ -27,7 +27,7 @@ SELECT d.*,
  * SIN(RADIANS(d.lat)) 
 )
 ) AS dist
-FROM mpf2f_deals d
+FROM MPF2F_deals d
 HAVING dist < _min_dist
 ORDER BY dist
 LIMIT 0, 20;

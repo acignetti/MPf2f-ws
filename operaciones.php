@@ -18,6 +18,15 @@ $callback = get_url_var('callback', FALSE);
 $response = new stdClass();
 switch ($operacion) {
     // operaciones de usuario
+    case OPERATION_USER_SIGNUP: // iniciar sesion
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
+        if ($delegate) {
+            $username = get_url_var('username', '');
+            $psw = get_url_var('password', '');
+            $response = $delegate->signup($username, $psw);
+        }
+        break;
+
     case OPERATION_USER_LOGIN: // iniciar sesion
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
@@ -93,7 +102,7 @@ switch ($operacion) {
                 $limit = get_url_var('limit', 50);
 
                 $user_id = $access->session->user_id;
-                $response = $delegate->list($user_id, $status, $start, $limit);
+                $response = $delegate->sale_list($user_id, $status, $start, $limit);
             }
         } else {
             http_response_code(403); // forbidden!
@@ -102,26 +111,47 @@ switch ($operacion) {
         break;
 
     case OPERATION_SALES_QR: // generar un qr para una venta
-        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
-        if ($delegate) {
-            $id = get_url_var('id', -1);
-            $response = $delegate->qr($id);
+        $access = validate_sesion();
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+            if ($delegate) {
+                $id = get_url_var('id', -1);
+                $user_id = $access->session->user_id;
+                $response = $delegate->qr($id, $user_id);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
         }
         break;
 
     case OPERATION_SALES_NFC: // generar la url de una venta para nfc
-        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
-        if ($delegate) {
-            $id = get_url_var('id', -1);
-            $response = $delegate->nfc($id);
+        $access = validate_sesion();
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+            if ($delegate) {
+                $id = get_url_var('id', -1);
+                $user_id = $access->session->user_id;
+                $response = $delegate->nfc($id, $user_id);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
         }
         break;
 
     case OPERATION_SALES_CODE:  // generar la url de una venta para un codigo
-        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
-        if ($delegate) {
-            $id = get_url_var('code', -1);
-            $response = $delegate->code($id);
+        $access = validate_sesion();
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+            if ($delegate) {
+                $code = get_url_var('code', -1);
+                $user_id = $access->session->user_id;
+                $response = $delegate->code($code, $user_id);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
         }
         break;
 
@@ -147,7 +177,26 @@ switch ($operacion) {
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
             $id = get_url_var('id', -1);
-            $response = $delegate->checkout($id);
+            $user_id = get_url_var('user_id', -1);
+            $response = $delegate->checkout($id, $user_id);
+        }
+        break;
+
+    case OPERATION_MP_CHECKOUT_DEAL:  // devolver el init_point de MP
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
+        if ($delegate) {
+            $id = get_url_var('id', -1);
+            $user_id = get_url_var('user_id', -1);
+            $response = $delegate->checkout($id, $user_id);
+        }
+        break;
+
+    case OPERATION_MP_AUTH: // 
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
+        if ($delegate) {
+            $client_id = get_url_var('client_id', -1);
+            $client_secret = get_url_var('client_secret', -1);
+            $response = $delegate->auth($client_id, $client_secret);
         }
         break;
 

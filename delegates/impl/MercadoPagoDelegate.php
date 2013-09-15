@@ -80,9 +80,9 @@ class MercadoPagoDelegate extends AbstractDelegate {
     /**
      * Crea el punto de entrada para el checkout de MP
      * @param type $id 
-     * @return \stdClass el [sand]init_pi
+     * @return \stdClass el [sandbox]init_point
      */
-    public function checkout($id = -1) {
+    public function checkout($id, $user_id) {
         $response = new stdClass();
         $response->status = false;
         $preference_data = null;
@@ -90,7 +90,7 @@ class MercadoPagoDelegate extends AbstractDelegate {
         $item = FALSE;
         if ($db) {
             try {
-                $result = $db->SaleGet($id);
+                $result = $db->SaleGet($id, $user_id);
                 if ($result && $result->num_rows > 0) {
                     $item = $result->fetch_object();
                 }
@@ -110,27 +110,35 @@ class MercadoPagoDelegate extends AbstractDelegate {
                     )
                 )
             );
-        }
-        try {
+            try {
+                if ($this->mp) { // se pudo inicializar MP?
+                    // crear el preference de la venta
+                    $preference = $this->mp->create_preference($preference_data);
+                    if ($this->mp->sandbox_mode()) // sanbox?
+                        $response->init_point = $preference['response']['sandbox_init_point'];
+                    else
+                        $response->init_point = $preference['response']['init_point'];
 
-            if ($this->mp) { // se pudo inicializar MP?
-                // crear el preference de la venta
-                $preference = $this->mp->create_preference($preference_data);
-                if ($this->mp->sandbox_mode()) // sanbox?
-                    $response->init_point = $preference['response']['sandbox_init_point'];
-                else
-                    $response->init_point = $preference['response']['init_point'];
-
-                $response->status = true;
+                    $response->status = true;
+                }
+                else {
+                    $response->error = "Ocurrio un error al procesar el checkout";
+                }
+            } catch (Exception $exc) {
+                $response->error = $exc->getTraceAsString();
             }
-            else {
-                $response->error = "Ocurrio un error al procesar el checkout";
-            }
-        } catch (Exception $exc) {
-            $response->error = $exc->getTraceAsString();
         }
-
         return $response;
+    }
+
+    /**
+     * Con los datos del usuario, se obtiene el access token para trabajar con su cuenta de MP
+     * Se obtienen de: https://www.mercadopago.com/mla/herramientas/aplicaciones
+     * @param type $client_id el client_id
+     * @param type $client_secret el client_secret
+     */
+    public function auth($client_id, $client_secret) {
+        
     }
 
 }

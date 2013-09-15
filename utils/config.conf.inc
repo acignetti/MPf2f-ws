@@ -31,12 +31,15 @@ define('OPERATION_MP', 'mp_');
 define('OPERATION_SALES', 'sales_');
 
 // operaciones relacionadas al usuario
+define('OPERATION_USER_SIGNUP', OPERATION_USER . 'signup');
 define('OPERATION_USER_LOGIN', OPERATION_USER . 'login');
 define('OPERATION_USER_LOGOUT', OPERATION_USER . 'logout');
 define('OPERATION_USER_SESION_CHECK', OPERATION_USER . 'session_check');
 
 // operaciones relacionadas a mp
 define('OPERATION_MP_CHECKOUT', OPERATION_MP . 'checkout');
+define('OPERATION_MP_CHECKOUT_DEAL', OPERATION_MP . 'checkout_deal');
+define('OPERATION_MP_AUTH', OPERATION_MP . 'auth');
 define('OPERATION_MP_IPN', OPERATION_MP . 'ipn');
 
 // operaciones relacionadas a las ventas
