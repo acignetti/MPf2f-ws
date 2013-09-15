@@ -1,13 +1,15 @@
 <?php
 
 /**
- * AbstractDelegate
+ *  AbstractDelegate
+ *  Clase base para los delegates de funciones
+ * 
+ *  @author Axel
  */
 abstract class AbstractDelegate {
 
-    protected static $instance = null;
-
-    protected function __construct() {
+    public function __construct() {
+        
     }
 
     /**
@@ -20,11 +22,6 @@ abstract class AbstractDelegate {
         $default = new stdClass();
         $default->error = "$name no definido";
         return $default;
-    }
-
-    // forzar a generar el instance
-    public static function getInstance() {
-        return null;
     }
 
 }

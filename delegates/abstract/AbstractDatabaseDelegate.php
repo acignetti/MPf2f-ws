@@ -1,8 +1,11 @@
 <?php
 
 /**
- * AbstractDatabaseDelegate
- * Hack: Esta clase no captura los metodos no definidos, __call no puede sobrecargarse (buscar la vuelta, si sobra tiempo :p)
+ *  AbstractDatabaseDelegate
+ *  Hack: Esta clase no captura los metodos no definidos, __call no puede sobrecargarse (buscar la vuelta, si sobra tiempo :p)
+ *  Clase base para los delegates que acceden a db
+ * 
+ *  @author Axel
  */
 abstract class AbstractDatabaseDelegate {
 
@@ -14,11 +17,6 @@ abstract class AbstractDatabaseDelegate {
 
     function query($query) {
         
-    }
-
-    // forzar a generar el instance
-    public static function getInstance() {
-        return null;
     }
 
 }

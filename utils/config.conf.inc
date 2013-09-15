@@ -1,28 +1,32 @@
 <?php
 
-define('DEBUG', TRUE);
-define('SANDBOX', TRUE);
+define('DEBUG', TRUE); // si esta activado se devuelven los errores en los json
+define('SANDBOX', TRUE); // activar el sandbox de MP?
 
-define("MYSQL_HOST", 'localhost');
+// datos de conexion a la db
+define("MYSQL_HOST", 'localhost'); 
 define("MYSQL_DB", 'MPF2F');
 define("MYSQL_USER", 'root');
 define("MYSQL_PWD", '');
 
+// prefijo de las tablas y sp
 define("MYSQL_DB_PREFIX", 'mpf2f_');
 
+// nombre de arhivos para generar logs
 define('LOG_FILE_WS', 'ws.log');
 define('LOG_FILE_IPN', 'ipn.log');
 
+// credenciales de un usuario de pruebas
 define('CLIENT_ID', '5688978878476133');
 define('CLIENT_SECRET', 'gqsFGRTuDJ3o3hjacIac7sXTMMTvOS2x');
 
-// definicion de delegates
+// definicion de los nombres de las clases de los delegates
 define('DELEGATE_USER', 'UserDelegate');
 define('DELEGATE_MP', 'MercadoPagoDelegate');
 define('DELEGATE_MYSQL', 'MySQLDelegate');
 define('DELEGATE_SALES', 'SalesDelegate');
 
-//definicion de operaciones
+//definicion de los prefijos de los tipos de operaciones
 define('OPERATION_USER', 'user_');
 define('OPERATION_MP', 'mp_');
 define('OPERATION_SALES', 'sales_');

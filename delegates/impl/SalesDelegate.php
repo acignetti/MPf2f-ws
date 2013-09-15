@@ -1,21 +1,14 @@
 <?php
 
 /**
- * Description of SalesDelegate
+ * Encapsula las funciones referidas a una venta
  *
  * @author Axel
  */
 class SalesDelegate extends AbstractDelegate {
 
-    protected function __construct() {
+    public function __construct() {
         parent::__construct();
-    }
-
-    public static function getInstance() {
-        if (is_null(parent::$instance)) {
-            parent::$instance = new SalesDelegate();
-        }
-        return parent::$instance;
     }
 
     /**
@@ -24,14 +17,14 @@ class SalesDelegate extends AbstractDelegate {
      * @param float $price precio de la venta
      * @return \stdClass
      */
-    public function create($descripcion, $price) {
+    public function create($user_id, $descripcion, $price) {
         $sales = new stdClass();
         $sales->status = false;
         $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
 
         if ($db) {
             try {
-                $result = $db->SaleNew($descripcion, $price);
+                $result = $db->SaleNew($user_id, $descripcion, $price);
                 if ($result && $result->num_rows > 0) {
                     $sales->item = $result->fetch_object();
                     $sales->status = true;
@@ -44,7 +37,7 @@ class SalesDelegate extends AbstractDelegate {
             }
         }
 
-        if ($sales->status) // se creo una entrada en la db
+        if ($sales->status) // se creo una nueva venta
             http_response_code(201);
 
         return $sales;
@@ -53,20 +46,21 @@ class SalesDelegate extends AbstractDelegate {
     /**
      * Retorna los datos de una venta
      * @param int $id el id de la venta a consultar
+     * @param int $uid el id del usuario
      * @return \stdClass stdClass con los datos de la venta
      */
-    public function get($id) {
+    public function get($id, $uid) {
         $sales = new stdClass();
-        $sales->status = fasle;
+        $sales->status = false;
         $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
 
         if ($db) {
             try {
-                $result = $db->SaleGet($id);
+                $result = $db->SaleGet($id, $uid);
                 if ($result && $result->num_rows > 0) {
                     $sales->item = $result->fetch_object();
                     $sales->status = true;
-                } else {
+                } else { // el id de la venta no es del usuario?
                     if (DEBUG)
                         $sales->error = $result;
                 }
@@ -78,7 +72,8 @@ class SalesDelegate extends AbstractDelegate {
     }
 
     private function build_url_checkout($id) {
-        return "http://localhost/mp-ws/operaciones.php?operacion=mp_checkout&id=$id";
+        $ip = $_SERVER['SERVER_ADDR'];
+        return "http://$ip/mp-ws/operaciones.php?operacion=mp_checkout&id=$id";
     }
 
     /**

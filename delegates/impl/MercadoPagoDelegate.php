@@ -9,7 +9,7 @@ class MercadoPagoDelegate extends AbstractDelegate {
 
     protected $mp = FALSE;
 
-    protected function __construct() {
+    public function __construct() {
         parent::__construct();
         include_once __DIR__ . '/../../libs/mercadopago/mercadopago.php';
         try {
@@ -19,13 +19,6 @@ class MercadoPagoDelegate extends AbstractDelegate {
         } catch (Exception $exc) {
             do_log($exc->getTraceAsString());
         }
-    }
-
-    public static function getInstance() {
-        if (is_null(parent::$instance)) {
-            parent::$instance = new MercadoPagoDelegate();
-        }
-        return parent::$instance;
     }
 
     /**
