@@ -17,7 +17,8 @@ class UserDelegate extends AbstractDelegate {
         $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
         $mp = DelegateFactory::getDelegateFor(DELEGATE_MP);
 
-        $token = $mp->auth($client_id, $client_secret);
+        $user_data = $mp->auth($client_id, $client_secret);
+        $token = $user_data->token;
 
         if ($db) {
             try {

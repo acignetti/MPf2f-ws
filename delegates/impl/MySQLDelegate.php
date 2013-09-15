@@ -6,7 +6,7 @@
  *
  * @author Axel
  */
-class MySQLDelegate extends AbstractDatabaseDelegate{
+class MySQLDelegate extends AbstractDatabaseDelegate {
 
     public $conn;
     private $last_error;
@@ -61,12 +61,8 @@ class MySQLDelegate extends AbstractDatabaseDelegate{
             } elseif ($type == 'NULL') {
                 $parameter = 'NULL';
             } elseif ($type == 'object') {
-                try {
-                    $parameter = $parameter->__toString();
-                } catch (Exception $__e) {
-                    trigger_error(sprintf("MySQLDelegate: Objeto de clase %s no posee metodo __toString(). Valor formateado a NULL", get_class($parameter)), E_USER_WARNING);
-                    $parameter = 'NULL';
-                }
+                // si es un object, ignorarlo (habria que analizar mejor ese caso
+                continue;
             }
 
 
