@@ -11,6 +11,8 @@ include './utils/functions.php';
 include './delegates/DelegateFactory.php';
 
 $operacion = get_url_var('operacion', '');
+// permitir jsonp
+$callback = get_url_var('callback', null);
 
 // respuesta por defecto
 $response = new stdClass();
@@ -28,8 +30,18 @@ switch ($operacion) {
     case OPERATION_USER_LOGOUT:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
-            $token = get_url_var('token', '');
-            $response = $delegate->logout($token);
+            $username = get_url_var('username', '');
+            $session_key = get_url_var('session_key', '');
+            $response = $delegate->logout($username, $session_key);
+        }
+        break;
+
+    case OPERATION_USER_SESION_CHECK:
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
+        if ($delegate) {
+            $username = get_url_var('username', '');
+            $session_key = get_url_var('session_key', '');
+            $response = $delegate->session_check($username, $session_key);
         }
         break;
 
@@ -55,6 +67,11 @@ switch ($operacion) {
         $response->response = "Operacion $operacion no definida..";
         break;
 }
-header('Content-type: application/json');
-echo json_encode($response);
+if ($callback != null) {
+    header('Content-type: application/javascript');
+    echo "$callback('" . json_encode($response) . "');";
+} else {
+//    header('Content-type: application/json');
+    echo json_encode($response);
+}
 ?>

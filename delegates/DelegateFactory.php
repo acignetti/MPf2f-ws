@@ -6,6 +6,7 @@
  * @author Axel
  */
 include __DIR__ . '/abstract/AbstractDelegate.php';
+include __DIR__ . '/abstract/AbstractDatabaseDelegate.php';
 
 class DelegateFactory {
 
@@ -22,7 +23,7 @@ class DelegateFactory {
                 break;
             case DELEGATE_MYSQL:
                 include __DIR__ . '/impl/' . DELEGATE_MYSQL . '.php';
-                $delegate = DELEGATE_MYSQL::getInstance();
+                $delegate = MySQLDelegate::getInstance();
                 break;
             default:
                 break;

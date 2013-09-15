@@ -1,4 +1,5 @@
 <?php
+
 /**
  * AbstractDelegate
  */
@@ -20,13 +21,11 @@ abstract class AbstractDelegate {
         $default->response = "$name no definido";
         return $default;
     }
-    
+
     // forzar a generar el instance
-    public static function getInstance()
-    {
+    public static function getInstance() {
         return null;
     }
-    
 
 }
 
