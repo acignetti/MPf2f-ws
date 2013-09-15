@@ -25,6 +25,10 @@ class DelegateFactory {
                 include __DIR__ . '/impl/' . DELEGATE_MYSQL . '.php';
                 $delegate = MySQLDelegate::getInstance();
                 break;
+            case DELEGATE_SALES:
+                include __DIR__ . '/impl/' . DELEGATE_SALES . '.php';
+                $delegate = SalesDelegate::getInstance();
+                break;
             default:
                 break;
         }

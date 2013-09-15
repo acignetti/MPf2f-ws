@@ -11,8 +11,8 @@ include './utils/functions.php';
 include './delegates/DelegateFactory.php';
 
 $operacion = get_url_var('operacion', '');
-// permitir jsonp
-$callback = get_url_var('callback', null);
+// contemplar jsonp
+$callback = get_url_var('callback', FALSE);
 
 // respuesta por defecto
 $response = new stdClass();
@@ -45,6 +45,29 @@ switch ($operacion) {
         }
         break;
 
+    // operaciones de ventas
+    case OPERATION_SALES_QR:
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+        if ($delegate) {
+            $id = get_url_var('id', -1);
+            $response = $delegate->qr($id);
+        }
+        break;
+    case OPERATION_SALES_NFC:
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+        if ($delegate) {
+            $id = get_url_var('id', -1);
+            $response = $delegate->nfc($id);
+        }
+        break;
+    case OPERATION_SALES_CODE:
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+        if ($delegate) {
+            $id = get_url_var('code', -1);
+            $response = $delegate->code($id);
+        }
+        break;
+        
     // operaciones de mp
     case OPERATION_MP_CHECKOUT:
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
@@ -67,11 +90,11 @@ switch ($operacion) {
         $response->response = "Operacion $operacion no definida..";
         break;
 }
-if ($callback != null) {
+if ($callback) {
     header('Content-type: application/javascript');
     echo "$callback('" . json_encode($response) . "');";
 } else {
-//    header('Content-type: application/json');
+    header('Content-type: application/json');
     echo json_encode($response);
 }
 ?>
