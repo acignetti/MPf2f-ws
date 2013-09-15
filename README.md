@@ -4,8 +4,8 @@
 Webservice para MP-F2F  (MercadoPago Face 2 Face)
 Nexo entre el resto de las aplicaciones: MP Wallet y MP Sales Point.
 
-##### Este ws contempla las siguientes operaciones:
 ========
+##### Este ws contempla las siguientes operaciones:
 
 ##### Operaciones relacionadas a los Usuarios:
 * user_signup
