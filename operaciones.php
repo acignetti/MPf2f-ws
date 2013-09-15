@@ -83,6 +83,24 @@ switch ($operacion) {
         }
         break;
 
+    case OPERATION_SALES_LIST:
+        $access = validate_sesion(); // obtener los datos de una venta
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+            if ($delegate) {
+                $status = get_url_var('status', 'pending');
+                $start = get_url_var('start', 0);
+                $limit = get_url_var('limit', 50);
+
+                $user_id = $access->session->user_id;
+                $response = $delegate->list($user_id, $status, $start, $limit);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
+        }
+        break;
+
     case OPERATION_SALES_QR: // generar un qr para una venta
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
         if ($delegate) {

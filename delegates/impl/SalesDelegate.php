@@ -71,6 +71,35 @@ class SalesDelegate extends AbstractDelegate {
         return $sales;
     }
 
+
+    /**
+     * Retorna una lista de ventas filtrando por estado y usuario.
+     * @param int $id el id de la venta a consultar
+     * @param int $uid el id del usuario
+     * @return \stdClass stdClass con los datos de la venta
+     */
+    public function list($userid, $status, $start, $limit) {
+        $sales = new stdClass();
+        $sales->status = false;
+        $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
+
+        if ($db) {
+            try {
+                $result = $db->SalesList($userid, $status, $start, $limit);
+                if ($result && $result->num_rows > 0) {
+                    $sales->item = $result->fetch_object();
+                    $sales->status = true;
+                } else {
+                    if (DEBUG)
+                        $sales->error = $result;
+                }
+            } catch (Exception $exc) {
+                $sales->error = $exc->getMessage();
+            }
+        }
+        return $sales;
+    }
+
     private function build_url_checkout($id) {
         $ip = $_SERVER['SERVER_ADDR'];
         return "http://$ip/mp-ws/operaciones.php?operacion=mp_checkout&id=$id";

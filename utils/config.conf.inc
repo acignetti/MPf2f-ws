@@ -42,6 +42,7 @@ define('OPERATION_MP_IPN', OPERATION_MP . 'ipn');
 // operaciones relacionadas a las ventas
 define('OPERATION_SALES_CREATE', OPERATION_SALES . 'create');
 define('OPERATION_SALES_GET', OPERATION_SALES . 'get');
+define('OPERATION_SALES_LIST', OPERATION_SALES . 'list');
 define('OPERATION_SALES_QR', OPERATION_SALES . 'qr');
 define('OPERATION_SALES_NFC', OPERATION_SALES . 'nfc');
 define('OPERATION_SALES_CODE', OPERATION_SALES . 'code');
