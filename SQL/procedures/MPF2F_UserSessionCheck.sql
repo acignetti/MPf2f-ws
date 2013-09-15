@@ -8,7 +8,7 @@ CREATE PROCEDURE `MPF2F_UserSessionCheck`(
  Descripción: 
  Comentarios:
  Autores: Cavecedo, Gabriel A.
- Audit Trail: Coronel, Axel: Fix comparacion de la fecha
+ Audit Trail:
 ===================================================
 */
 _user VARCHAR(100),
