@@ -107,13 +107,20 @@ switch ($operacion) {
         }
         break;
 
-    case OPERATION_SALES_DEALS:  // generar la url de una venta para un codigo
+    case OPERATION_SALES_FIND_DEALS:  // generar la url de una venta para un codigo
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
         if ($delegate) {
             $lon = get_url_var('lon', -1);
             $lat = get_url_var('lat', -1);
             $range = get_url_var('range', -1);
             $response = $delegate->near_deals($lat, $lon, $range);
+        }
+        break;
+    case OPERATION_SALES_BUY_DEAL:  // generar la url de una venta para un codigo
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+        if ($delegate) {
+            $id = get_url_var('id', -1);
+            $response = $delegate->buy_deal($id);
         }
         break;
 

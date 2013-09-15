@@ -114,7 +114,7 @@ class SalesDelegate extends AbstractDelegate {
         return $response;
     }
 
-        /**
+    /**
      * Devuelve la url del init_point de mp
      * @param int $code codigo de la venta
      * @return String url para hacer checkout
@@ -153,6 +153,13 @@ class SalesDelegate extends AbstractDelegate {
             }
         }
         return $deals;
+    }
+
+    public function buy_deal($id) {
+        $response = new stdClass();
+        $response->status = true;
+        $response->url = $this->build_url_checkout($id);
+        return $response;
     }
 
 }
