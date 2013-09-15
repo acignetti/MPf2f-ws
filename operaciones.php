@@ -1,5 +1,4 @@
 <?php
-
 /**
  * operaciones.php
  * 
