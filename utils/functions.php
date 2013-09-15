@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Devuelve un parametro
  * @param String $param nombre del parametro a obtener
@@ -15,6 +16,16 @@ function get_url_var($param, $default = null) {
         $val = $_POST[$param];
 
     return $val;
+}
+
+function validate_sesion() {
+    $username = get_url_var('username', '');
+    $session_key = get_url_var('session_key', '');
+    $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
+    if ($delegate)
+        return $delegate->session_check($username, $session_key);
+    else
+        return FALSE;
 }
 
 /**

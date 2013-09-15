@@ -9,7 +9,7 @@ class MercadoPagoDelegate extends AbstractDelegate {
 
     protected $mp = FALSE;
 
-    protected function __construct() {
+    public function __construct() {
         parent::__construct();
         include_once __DIR__ . '/../../libs/mercadopago/mercadopago.php';
         try {
@@ -21,24 +21,42 @@ class MercadoPagoDelegate extends AbstractDelegate {
         }
     }
 
-    public static function getInstance() {
-        if (is_null(parent::$instance)) {
-            parent::$instance = new MercadoPagoDelegate();
-        }
-        return parent::$instance;
-    }
-
     /**
      * Procesa la notificacion entrante por parte de MP
      * @param String (json) $payment_info
      * @return \stdClass
      */
     private function process_ipn($payment_info) {
-        http_response_code(200); // http_response_code(201);
-        $payment_info_json = json_encode($payment_info);
         $response = new stdClass();
-        $response->external_reference = $payment_info_json->response->collection->external_reference;
-        $response->status = $payment_info_json->response->collection->status;
+        $response->status = false;
+        try {
+            $payment_info_json = json_encode($payment_info);
+            $external_reference = $payment_info_json->response->collection->external_reference;
+            $status = $payment_info_json->response->collection->status;
+
+            $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
+            if ($db) {
+                try {
+                    // actualizo el estado de la venta
+                    $result = $db->SaleUpdateStatus($external_reference, $status);
+                    if ($result && $result->num_rows > 0) {
+                        $response->status = true;
+                    } else {
+                        if (DEBUG)
+                            $response->error = $result;
+                    }
+                } catch (Exception $exc) {
+                    $response->error = $exc->getMessage();
+                }
+            }
+            $response->status = true;
+        } catch (Exception $exc) {
+            $response->error = $exc->getTraceAsString();
+        }
+        if ($response->status)
+            http_response_code(200); // http_response_code(201); si se creara algo..
+        else
+            http_response_code(500);
         return $response;
     }
 
@@ -50,7 +68,7 @@ class MercadoPagoDelegate extends AbstractDelegate {
         $response = new stdClass();
         try {
             $payment_info = $this->mp->get_payment_info($id);
-            $response->response = $this->process_ipn($payment_info);
+            $response->ipn = $this->process_ipn($payment_info);
         } catch (Exception $exc) {
             // en caso de error, se devuelve 500 para que MP lo tome como error y reintente los IPN
             http_response_code(500);
@@ -82,6 +100,7 @@ class MercadoPagoDelegate extends AbstractDelegate {
         }
         if ($item) {
             $preference_data = array(
+                "external_reference" => "$id",
                 "items" => array(
                     array(
                         "title" => $item->name,

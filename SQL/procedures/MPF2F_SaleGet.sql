@@ -8,7 +8,7 @@
 	 Descripción: 
 	 Comentarios:
 	 Autores: Cavecedo, Gabriel A.
-	 Audit Trail:
+	 Audit Trail: Coronel, Axel: fix nombre columna
 	===================================================
 	*/
 
@@ -17,7 +17,7 @@
 	)
 	BEGIN
 		
-		SELECT * FROM MPF2F_sale WHERE sale_id = _sale_id and userid = _user_id;
+		SELECT * FROM MPF2F_sale WHERE sale_id = _sale_id and user_id = _user_id;
 		
 
 

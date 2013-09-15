@@ -13,13 +13,6 @@ class MySQLDelegate extends AbstractDatabaseDelegate{
     private $prefix = MYSQL_DB_PREFIX;
     private $use_store_result = false;
 
-    public static function getInstance() {
-        if (is_null(parent::$instance)) {
-            parent::$instance = new MySQLDelegate(MYSQL_HOST, MYSQL_USER, MYSQL_PWD, MYSQL_DB);
-        }
-        return parent::$instance;
-    }
-
     /**
      * Contruye la conexion a un servidor MySQL
      */

@@ -18,7 +18,7 @@ $callback = get_url_var('callback', FALSE);
 $response = new stdClass();
 switch ($operacion) {
     // operaciones de usuario
-    case OPERATION_USER_LOGIN:
+    case OPERATION_USER_LOGIN: // iniciar sesion
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
             $username = get_url_var('username', '');
@@ -27,16 +27,22 @@ switch ($operacion) {
         }
         break;
 
-    case OPERATION_USER_LOGOUT:
-        $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
-        if ($delegate) {
-            $username = get_url_var('username', '');
-            $session_key = get_url_var('session_key', '');
-            $response = $delegate->logout($username, $session_key);
+    case OPERATION_USER_LOGOUT: // cerrar sesion
+        $access = validate_sesion();
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
+            if ($delegate) {
+                $username = get_url_var('username', '');
+                $session_key = get_url_var('session_key', '');
+                $response = $delegate->logout($username, $session_key);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
         }
         break;
 
-    case OPERATION_USER_SESION_CHECK:
+    case OPERATION_USER_SESION_CHECK: // validar sesion
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
             $username = get_url_var('username', '');
@@ -47,23 +53,37 @@ switch ($operacion) {
 
     // operaciones de ventas
     case OPERATION_SALES_CREATE:
-        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
-        if ($delegate) {
-            $description = get_url_var('description', '');
-            $price = get_url_var('price', -1);
-            $response = $delegate->create($description, $price);
+        $access = validate_sesion(); // crear venta
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+            if ($delegate) {
+                $description = get_url_var('description', '');
+                $price = get_url_var('price', -1);
+                $user_id = $access->session->user_id;
+                $response = $delegate->create($user_id, $description, $price);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
         }
         break;
 
     case OPERATION_SALES_GET:
-        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
-        if ($delegate) {
-            $id = get_url_var('id', -1);
-            $response = $delegate->get($id);
+        $access = validate_sesion(); // obtener los datos de una venta
+        if ($access->status && $access->session->user_id > -1) {
+            $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+            if ($delegate) {
+                $id = get_url_var('id', -1);
+                $user_id = $access->session->user_id;
+                $response = $delegate->get($id, $user_id);
+            }
+        } else {
+            http_response_code(403); // forbidden!
+            $response = $access;
         }
         break;
 
-    case OPERATION_SALES_QR:
+    case OPERATION_SALES_QR: // generar un qr para una venta
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
         if ($delegate) {
             $id = get_url_var('id', -1);
@@ -71,7 +91,7 @@ switch ($operacion) {
         }
         break;
 
-    case OPERATION_SALES_NFC:
+    case OPERATION_SALES_NFC: // generar la url de una venta para nfc
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
         if ($delegate) {
             $id = get_url_var('id', -1);
@@ -79,7 +99,7 @@ switch ($operacion) {
         }
         break;
 
-    case OPERATION_SALES_CODE:
+    case OPERATION_SALES_CODE:  // generar la url de una venta para un codigo
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
         if ($delegate) {
             $id = get_url_var('code', -1);
@@ -87,8 +107,25 @@ switch ($operacion) {
         }
         break;
 
+    case OPERATION_SALES_FIND_DEALS:  // generar la url de una venta para un codigo
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+        if ($delegate) {
+            $lon = get_url_var('lon', -1);
+            $lat = get_url_var('lat', -1);
+            $range = get_url_var('range', -1);
+            $response = $delegate->near_deals($lat, $lon, $range);
+        }
+        break;
+    case OPERATION_SALES_BUY_DEAL:  // generar la url de una venta para un codigo
+        $delegate = DelegateFactory::getDelegateFor(DELEGATE_SALES);
+        if ($delegate) {
+            $id = get_url_var('id', -1);
+            $response = $delegate->buy_deal($id);
+        }
+        break;
+
     // operaciones de mp
-    case OPERATION_MP_CHECKOUT:
+    case OPERATION_MP_CHECKOUT:  // devolver el init_point de MP
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
             $id = get_url_var('id', -1);
@@ -96,7 +133,7 @@ switch ($operacion) {
         }
         break;
 
-    case OPERATION_MP_IPN:
+    case OPERATION_MP_IPN: // url para procesar un IPN
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_MP);
         if ($delegate) {
             $id = get_url_var('id', -1);
