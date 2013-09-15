@@ -1,4 +1,5 @@
 <?php
+
 define('DEBUG', TRUE);
 define('SANDBOX', TRUE);
 
@@ -28,14 +29,16 @@ define('OPERATION_SALES', 'sales_');
 
 // operaciones relacionadas al usuario
 define('OPERATION_USER_LOGIN', OPERATION_USER . 'login');
-define('OPERATION_USER_LOGOUT', OPERATION_USER. 'logout');
-define('OPERATION_USER_SESION_CHECK', OPERATION_USER. 'session_check');
+define('OPERATION_USER_LOGOUT', OPERATION_USER . 'logout');
+define('OPERATION_USER_SESION_CHECK', OPERATION_USER . 'session_check');
 
 // operaciones relacionadas a mp
 define('OPERATION_MP_CHECKOUT', OPERATION_MP . 'checkout');
 define('OPERATION_MP_IPN', OPERATION_MP . 'ipn');
 
 // operaciones relacionadas a las ventas
+define('OPERATION_SALES_CREATE', OPERATION_SALES . 'create');
+define('OPERATION_SALES_GET', OPERATION_SALES . 'get');
 define('OPERATION_SALES_QR', OPERATION_SALES . 'qr');
 define('OPERATION_SALES_NFC', OPERATION_SALES . 'nfc');
 define('OPERATION_SALES_CODE', OPERATION_SALES . 'code');

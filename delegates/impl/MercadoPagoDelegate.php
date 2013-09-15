@@ -64,29 +64,52 @@ class MercadoPagoDelegate extends AbstractDelegate {
      * @param type $id 
      * @return \stdClass el [sand]init_pi
      */
-    public function checkout($id) {
-        $preference_data = array(
-            "items" => array(
-                array(
-                    "title" => "Barrilete multicolor",
-                    "quantity" => 1,
-                    "currency_id" => "ARS",
-                    "unit_price" => 10.00
-                )
-            )
-        );
-
-
-        $preference = $this->mp->create_preference($preference_data);
+    public function checkout($id = -1) {
         $response = new stdClass();
-        if ($this->mp) {
-            if ($this->mp->sandbox_mode())
-                $response->init_point = $preference['response']['sandbox_init_point'];
-            else
-                $response->init_point = $preference['response']['init_point'];
+        $response->status = false;
+        $preference_data = null;
+        $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
+        $item = FALSE;
+        if ($db) {
+            try {
+                $result = $db->SaleGet($id);
+                if ($result && $result->num_rows > 0) {
+                    $item = $result->fetch_object();
+                }
+            } catch (Exception $exc) {
+                
+            }
         }
-        else
-            $response->response = "ocurrio un error al procesar el checkout";
+        if ($item) {
+            $preference_data = array(
+                "items" => array(
+                    array(
+                        "title" => $item->name,
+                        "quantity" => 1,
+                        "currency_id" => "ARS",
+                        "unit_price" => (int) $item->ammount
+                    )
+                )
+            );
+        }
+        try {
+
+            if ($this->mp) { // se pudo inicializar MP?
+                // crear el preference de la venta
+                $preference = $this->mp->create_preference($preference_data);
+                if ($this->mp->sandbox_mode()) // sanbox?
+                    $response->init_point = $preference['response']['sandbox_init_point'];
+                else
+                    $response->init_point = $preference['response']['init_point'];
+
+                $response->status = true;
+            }
+            else {
+                $response->error = "Ocurrio un error al procesar el checkout";
+            }
+        } catch (Exception $exc) {
+            $response->error = $exc->getTraceAsString();
+        }
 
         return $response;
     }

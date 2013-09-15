@@ -18,7 +18,7 @@ abstract class AbstractDelegate {
      */
     public function __call($name, $arguments) {
         $default = new stdClass();
-        $default->response = "$name no definido";
+        $default->error = "$name no definido";
         return $default;
     }
 
