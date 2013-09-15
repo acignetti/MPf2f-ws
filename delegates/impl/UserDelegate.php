@@ -10,6 +10,33 @@ class UserDelegate extends AbstractDelegate {
         parent::__construct();
     }
 
+    public function signup($username, $psw, $client_id, $client_secret) {
+        $response = new stdClass();
+        $response->status = false;
+
+        $db = DelegateFactory::getDelegateFor(DELEGATE_MYSQL);
+        $mp = DelegateFactory::getDelegateFor(DELEGATE_MP);
+
+        $token = $mp->auth($client_id, $client_secret);
+
+        if ($db) {
+            try {
+                $result = $db->UserSignUp($username, $psw, $client_id, $client_secret, $token);
+                if ($result && $result->num_rows > 0) {
+                    $response->user = $result->fetch_object();
+                    $response->status = true;
+                } else {
+                    if (DEBUG)
+                        $response->error = $result;
+                }
+            } catch (Exception $exc) {
+                $response->error = $exc->getMessage();
+            }
+        }
+
+        return $response;
+    }
+
     /**
      * Realiza la validacion de las credenciales del usuario
      * @param type $username nombre de usuario
@@ -94,5 +121,4 @@ class UserDelegate extends AbstractDelegate {
     }
 
 }
-
 ?>

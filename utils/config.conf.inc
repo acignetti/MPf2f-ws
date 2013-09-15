@@ -8,6 +8,8 @@ define("MYSQL_DB", 'MPF2F');
 define("MYSQL_USER", 'root');
 define("MYSQL_PWD", '');
 
+define("URL_OAUTH_TOKEN", "https://api.mercadolibre.com/oauth/token");
+
 // prefijo de las tablas y sp
 define("MYSQL_DB_PREFIX", 'mpf2f_');
 
@@ -15,9 +17,9 @@ define("MYSQL_DB_PREFIX", 'mpf2f_');
 define('LOG_FILE_WS', 'ws.log');
 define('LOG_FILE_IPN', 'ipn.log');
 
-// credenciales de un usuario de pruebas
-define('CLIENT_ID', '5688978878476133');
-define('CLIENT_SECRET', 'gqsFGRTuDJ3o3hjacIac7sXTMMTvOS2x');
+//// credenciales de un usuario de pruebas
+//define('CLIENT_ID', '5688978878476133');
+//define('CLIENT_SECRET', 'gqsFGRTuDJ3o3hjacIac7sXTMMTvOS2x');
 
 // definicion de los nombres de las clases de los delegates
 define('DELEGATE_USER', 'UserDelegate');

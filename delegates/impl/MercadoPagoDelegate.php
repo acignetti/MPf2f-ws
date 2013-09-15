@@ -13,12 +13,20 @@ class MercadoPagoDelegate extends AbstractDelegate {
         parent::__construct();
         include_once __DIR__ . '/../../libs/mercadopago/mercadopago.php';
         try {
-            $this->mp = new MP(CLIENT_ID, CLIENT_SECRET);
-            if (SANDBOX)
-                $this->mp->sandbox_mode(SANDBOX);
+//            $this->init_mp(CLIENT_ID, CLIENT_SECRET);
         } catch (Exception $exc) {
             do_log($exc->getTraceAsString());
         }
+    }
+
+    private function init_mp($client_id, $client_secret) {
+        $this->mp = new MP($client_id, $client_secret);
+        if (SANDBOX)
+            $this->mp->sandbox_mode(SANDBOX);
+    }
+
+    private function get_user_mp_credentials($user_id) {
+ 
     }
 
     /**
@@ -67,12 +75,15 @@ class MercadoPagoDelegate extends AbstractDelegate {
     public function ipn($id) {
         $response = new stdClass();
         try {
+            //obtener el id del usuario al que pertenece la venta
+            //instanciar MP para ese usuario
+
             $payment_info = $this->mp->get_payment_info($id);
             $response->ipn = $this->process_ipn($payment_info);
         } catch (Exception $exc) {
             // en caso de error, se devuelve 500 para que MP lo tome como error y reintente los IPN
             http_response_code(500);
-            $response->response = $exc->getMessage();
+            $response->error = $exc->getMessage();
         }
         return $response;
     }
@@ -138,9 +149,21 @@ class MercadoPagoDelegate extends AbstractDelegate {
      * @param type $client_secret el client_secret
      */
     public function auth($client_id, $client_secret) {
-        
+        $response = new stdClass();
+        $response->status = false;
+
+        $this->init_mp($client_id, $client_secret);
+        try {
+            if ($this->mp) {
+                $response->token = $this->mp->get_access_token();
+                $response->status = true;
+            }
+        } catch (Exception $exc) {
+            $response->error = $exc->getTraceAsString();
+        }
+
+        return $response;
     }
 
 }
-
 ?>

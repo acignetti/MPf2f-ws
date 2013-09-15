@@ -18,12 +18,15 @@ $callback = get_url_var('callback', FALSE);
 $response = new stdClass();
 switch ($operacion) {
     // operaciones de usuario
-    case OPERATION_USER_SIGNUP: // iniciar sesion
+    case OPERATION_USER_SIGNUP: // crear la cuenta del usuario
         $delegate = DelegateFactory::getDelegateFor(DELEGATE_USER);
         if ($delegate) {
             $username = get_url_var('username', '');
             $psw = get_url_var('password', '');
-            $response = $delegate->signup($username, $psw);
+            $client_id = get_url_var('client_id', '');
+            $client_secret = get_url_var('client_secret', '');
+            
+            $response = $delegate->signup($username, $psw, $client_id, $client_secret);
         }
         break;
 
