@@ -20,7 +20,7 @@
 	BEGIN
 		
 		
-		INSERT INTO MPF2F_sale(status, name, ammount, date) VALUES(1, _name, _ammount, now());
+		INSERT INTO MPF2F_sale( name, ammount, date) VALUES(_name, _ammount, now());
 
 		SELECT @@identity as sale_id;
 

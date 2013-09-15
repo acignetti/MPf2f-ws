@@ -13,7 +13,7 @@
 	*/
 
 	  _sale_id int,
-	  _status int
+	  _status varchar(15)
 	  
 	)
 	BEGIN
