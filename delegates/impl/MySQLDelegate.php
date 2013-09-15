@@ -61,7 +61,7 @@ class MySQLDelegate extends AbstractDatabaseDelegate {
             } elseif ($type == 'NULL') {
                 $parameter = 'NULL';
             } elseif ($type == 'object') {
-                // si es un object, ignorarlo (habria que analizar mejor ese caso
+                // si es un object, ignorarlo (habria que analizar mejor ese caso)
                 continue;
             }
 

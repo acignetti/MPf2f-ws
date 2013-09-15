@@ -1,7 +1,9 @@
 <?php
 
 define('DEBUG', TRUE); // si esta activado se devuelven los errores en los json
+                       // desactiva el GET en get_url_var, aunque se dejo activado por temas de xhr y poder utilizar jsonp
 define('SANDBOX', TRUE); // activar el sandbox de MP?
+
 // datos de conexion a la db
 define("MYSQL_HOST", 'localhost');
 define("MYSQL_DB", 'MPF2F');
