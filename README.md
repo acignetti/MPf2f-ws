@@ -43,30 +43,32 @@ El Mysql sobre el que se desarrolo, al correr sobre windows ignora las mayuscula
 
 ##### Estructura del proyecto:
 
---delegates
-	\-- abstract
-	\-- impl
---libs
-	\-- mercadopago
-	\-- qr
---sql
-	\-- procedures
-	\-- schema
-	\-- tables
---utils
+- delegates
+- abstract
+⋅⋅* impl
+- libs
+⋅⋅* mercadopago
+⋅⋅* qr
+- sql
+⋅⋅* procedures
+⋅⋅* schema
+⋅⋅* tables
+- utils
 
 Como funciona el WebService:
 
 El punto de entrada es **operaciones.php**
-- Lo minimo que se espera es un parametro operaciones, se utiliza en un switch para identificar la operacion, los parametros asociados a la operacion y luego delegar la logica en a delegate.
+- Lo minimo que se espera es un parametro **operaciones**, se utiliza en un switch para identificar la *operacion*, los *parametros* asociados a la operacion y luego delegar la logica en a *delegate*.
 
-- Ejemplo de pegada: http://localhost/mp-ws/operaciones.php?operacion=user_login&username=user&password=123
+- Ejemplo de pegada:
+http://localhost/mp-ws/operaciones.php?operacion=user_login&username=user&password=123
 
 Donde:
-    - la operacion a ejecutar es **user_login**
-    - **username** y **password** son los parametros asociados a la operacion.
+- La *operacion* a ejecutar es **user_login**
+- **username** y **password** son los parametros asociados a la *operacion*.
 
 Respuesta:
+```javascript
         {
             "status": true, // si se produce algun error, status es false, si **DEBUG** (en configs.conf.inc) es **TRUE**, se adjunta un mensaje de error
             "session": {
@@ -79,7 +81,7 @@ Respuesta:
                         "valid": "1"
                 }
         }
-
+ ```
 - Notar que esta dentro de una subcarpeta y no en el / del dominio
 - Siempre devuelve un *json* (o *jsonp* si se agrega un parametro *callback*)
 - Ciertas operaciones tienen una *minima* validacion de sesion (utilizando el username y la session_key que expira a la hora)
