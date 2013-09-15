@@ -18,9 +18,11 @@ BEGIN
 	
 	DECLARE userSelect VARCHAR(100) DEFAULT '';
 	DECLARE secret VARCHAR(100) DEFAULT '';
+	DECLARE uname VARCHAR(100) DEFAULT '';
 	DECLARE uid INT DEFAULT -1;
 
-	SELECT user_id, user into uid, userSelect 
+
+	SELECT user_id, user,name into uid, userSelect,uname
 	    FROM MPF2F_user
 	    WHERE user = _user AND pass = _pass;
 
@@ -40,7 +42,7 @@ BEGIN
 
 	END IF;
 
-	SELECT uid, us.* FROM MPF2F_user_session us WHERE user = _user AND session_key = @secret;
+	SELECT uid,uname, us.* FROM MPF2F_user_session us WHERE user = _user AND session_key = @secret;
 	
 
 END//
