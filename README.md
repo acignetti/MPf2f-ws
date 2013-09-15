@@ -41,18 +41,18 @@ Nexo entre el resto de las aplicaciones: MP Wallet y MP Sales Point.
 Nota:
 El Mysql sobre el que se desarrolo, al correr sobre windows ignora las mayusculas en los nombres de las tablas. En las stored procedures, estan como en los creates (prefijo en mayusculas)
 
-##### Estructura del proyecto:
+##### Estructura del proyecto
 
 - delegates
 - abstract
-..* impl
+    impl
 - libs
-..* mercadopago
-..* qr
+    mercadopago
+    qr
 - sql
-..* procedures
-..* schema
-..* tables
+    procedures
+    schema
+    tables
 - utils
 
 Como funciona el WebService:
